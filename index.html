@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Age Calculator</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #74ebd5, #acb6e5);
+      font-size: 16px;
+    }
+
+    .container {
+      background: #ffffff;
+      padding: 40px 30px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      max-width: 450px;
+      text-align: center;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    .container h1 {
+      font-size: 2rem;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .container h1 span {
+      color: #6c5ce7;
+    }
+
+    .input-box {
+      margin: 25px 0;
+    }
+
+    input[type="date"] {
+      padding: 10px;
+      border: 2px solid #6c5ce7;
+      border-radius: 8px;
+      font-size: 1rem;
+      width: 100%;
+      outline: none;
+      transition: border 0.3s;
+    }
+
+    input[type="date"]:focus {
+      border-color: #4834d4;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 10px 25px;
+      background: #6c5ce7;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #4834d4;
+    }
+
+    #result {
+      margin-top: 30px;
+      font-size: 1.1rem;
+      color: #333;
+      line-height: 1.8;
+    }
+
+    #result span {
+      color: #6c5ce7;
+      font-weight: bold;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Responsive design */
+    @media (max-width: 1200px) {
+      .container {
+        max-width: 80%;
+        padding: 40px;
+      }
+    }
+
+    /* Tablet devices */
+    @media (max-width: 768px) {
+      .container {
+        max-width: 90%;
+        padding: 30px;
+      }
+
+      .container h1 {
+        font-size: 1.8rem;
+      }
+
+      input[type="date"], button {
+        font-size: 1.1rem;
+        padding: 8px;
+      }
+
+      #result {
+        font-size: 1rem;
+      }
+    }
+
+    /* Mobile devices */
+    @media (max-width: 480px) {
+      .container {
+        max-width: 95%;
+        padding: 20px;
+      }
+
+      .container h1 {
+        font-size: 1.5rem;
+      }
+
+      input[type="date"], button {
+        font-size: 1rem;
+        padding: 6px;
+      }
+
+      #result {
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>JavaScript <br /><span>Age Calculator</span></h1>
+    <div class="input-box">
+      <input type="date" id="date" />
+      <button onclick="startAgeTimer()">Calculate</button>
+    </div>
+    <p id="result"></p>
+  </div>
+
+  <script>
+    const userInput = document.getElementById("date");
+    const result = document.getElementById("result");
+    userInput.max = new Date().toISOString().split("T")[0];
+    let interval;
+
+    function startAgeTimer() {
+      if (!userInput.value) {
+        result.innerHTML = "Please select your birth date.";
+        return;
+      }
+
+      clearInterval(interval); // Clear any existing interval
+      updateAge(); // Show age instantly
+      interval = setInterval(updateAge, 1000); // Update every second
+    }
+
+    function updateAge() {
+      const birthDate = new Date(userInput.value);
+      const now = new Date();
+
+      let diff = now - birthDate;
+
+      if (diff < 0) {
+        result.innerHTML = "Invalid date.";
+        return;
+      }
+
+      const seconds = Math.floor(diff / 1000);
+      const minutes = Math.floor(seconds / 60);
+      const hours = Math.floor(minutes / 60);
+      const days = Math.floor(hours / 24);
+
+      let y = now.getFullYear() - birthDate.getFullYear();
+      let m = now.getMonth() - birthDate.getMonth();
+      let d = now.getDate() - birthDate.getDate();
+
+      if (d < 0) {
+        m--;
+        d += getDaysInMonth(now.getFullYear(), now.getMonth() - 1);
+      }
+
+      if (m < 0) {
+        y--;
+        m += 12;
+      }
+
+      const hr = now.getHours() - birthDate.getHours();
+      const min = now.getMinutes() - birthDate.getMinutes();
+      const sec = now.getSeconds() - birthDate.getSeconds();
+
+      let h = hr < 0 ? 24 + hr : hr;
+      let mi = min < 0 ? 60 + min : min;
+      let s = sec < 0 ? 60 + sec : sec;
+
+      result.innerHTML = `You are <span>${y}</span> years, <span>${m}</span> months, <span>${d}</span> days, <span>${mi}</span> minutes, and <span>${s}</span> seconds old.`;
+    }
+
+    function getDaysInMonth(year, month) {
+      return new Date(year, month + 1, 0).getDate();
+    }
+  </script>
+</body>
+</html>
